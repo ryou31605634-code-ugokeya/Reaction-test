@@ -40,12 +40,11 @@ body {
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 0.9em;
-  white-space: nowrap;     /* ← 改行防止 */
+  white-space: nowrap;
   min-width: 160px;
   text-align: center;
 }
 
-/* 矢印（上向き） */
 .balloon::before {
   content: "";
   position: absolute;
@@ -134,16 +133,13 @@ ul {
 <button id="reset">リセット</button>
 
 <script>
-/* ===== 状態 ===== */
 let state = "idle";
 let startTime = 0;
 let timerId = null;
 
-/* ===== データ ===== */
 let visualTimes = [[], []];
 let auditoryTimes = [[], []];
 
-/* ===== Audio ===== */
 let audioCtx = null;
 
 function initAudio() {
@@ -170,7 +166,6 @@ function playBeep() {
   osc.stop(audioCtx.currentTime + 0.1);
 }
 
-/* ===== DOM ===== */
 const target = document.getElementById("target");
 const message = document.getElementById("message");
 const stimulus = document.getElementById("stimulus");
@@ -194,7 +189,6 @@ const aAvg = [
   document.getElementById("auditoryAverage1")
 ];
 
-/* ===== 初期化 ===== */
 function resetToIdle(text="クリック / タップで開始") {
   if (timerId) clearTimeout(timerId);
   timerId = null;
@@ -203,7 +197,6 @@ function resetToIdle(text="クリック / タップで開始") {
   message.textContent = text;
 }
 
-/* ===== 入力処理 ===== */
 function handleInput(e) {
   e.preventDefault();
   initAudio();
@@ -217,7 +210,12 @@ function handleInput(e) {
 
   if (state === "idle") {
     state = "waiting";
-    message.textContent = "待ってください…";
+
+    if (stimulus.value === "visual") {
+      message.textContent = "待ってください…";
+    } else {
+      message.textContent = "音が鳴ったらクリック";
+    }
 
     timerId = setTimeout(() => {
       state = "measuring";
@@ -228,7 +226,6 @@ function handleInput(e) {
         message.textContent = "今すぐクリック！";
       } else {
         playBeep();
-        message.textContent = "";
       }
     }, Math.random() * 2000 + 1000);
     return;
@@ -252,7 +249,6 @@ function handleInput(e) {
   }
 }
 
-/* ===== 表示更新 ===== */
 function update(times, list, avg) {
   list.innerHTML = "";
   times.forEach((t,i)=>{
@@ -265,7 +261,6 @@ function update(times, list, avg) {
     : "平均：---";
 }
 
-/* ===== リセット ===== */
 resetBtn.addEventListener("click", ()=>{
   visualTimes = [[], []];
   auditoryTimes = [[], []];
@@ -276,7 +271,6 @@ resetBtn.addEventListener("click", ()=>{
   resetToIdle();
 });
 
-/* ===== イベント ===== */
 target.addEventListener("click", handleInput);
 target.addEventListener("touchstart", handleInput, { passive:false });
 </script>
