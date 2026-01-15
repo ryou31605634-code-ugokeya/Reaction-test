@@ -225,10 +225,11 @@ function handleInput(e) {
 
       if (stimulus.value === "visual") {
         target.style.background = "red";
+        message.textContent = "今すぐクリック！";
       } else {
         playBeep();
+        message.textContent = "";
       }
-      message.textContent = "今すぐクリック！";
     }, Math.random() * 2000 + 1000);
     return;
   }
